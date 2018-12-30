@@ -1,0 +1,182 @@
+[
+  {
+    "wins": 45,
+    "losses": 20,
+    "full_name": "Boston Celtics",
+    "id": 1
+  },
+  {
+    "wins": 20,
+    "losses": 44,
+    "full_name": "Brooklyn Nets",
+    "id": 2
+  },
+  {
+    "wins": 24,
+    "losses": 40,
+    "full_name": "New York Knicks",
+    "id": 3
+  },
+  {
+    "wins": 34,
+    "losses": 28,
+    "full_name": "Philadelphia 76ers",
+    "id": 4
+  },
+  {
+    "wins": 45,
+    "losses": 17,
+    "full_name": "Toronto Raptors",
+    "id": 5
+  },
+  {
+    "wins": 21,
+    "losses": 42,
+    "full_name": "Chicago Bulls",
+    "id": 6
+  },
+  {
+    "wins": 37,
+    "losses": 26,
+    "full_name": "Cleveland Cavaliers",
+    "id": 7
+  },
+  {
+    "wins": 29,
+    "losses": 35,
+    "full_name": "Detroit Pistons",
+    "id": 8
+  },
+  {
+    "wins": 37,
+    "losses": 27,
+    "full_name": "Indiana Pacers",
+    "id": 9
+  },
+  {
+    "wins": 34,
+    "losses": 30,
+    "full_name": "Milwaukee Bucks",
+    "id": 10
+  },
+  {
+    "wins": 20,
+    "losses": 44,
+    "full_name": "Atlanta Hawks",
+    "id": 11
+  },
+  {
+    "wins": 28,
+    "losses": 36,
+    "full_name": "Charlotte Hornets",
+    "id": 12
+  },
+  {
+    "wins": 34,
+    "losses": 30,
+    "full_name": "Miami Heat",
+    "id": 13
+  },
+  {
+    "wins": 20,
+    "losses": 44,
+    "full_name": "Orlando Magic",
+    "id": 14
+  },
+  {
+    "wins": 36,
+    "losses": 28,
+    "full_name": "Washington Wizards",
+    "id": 15
+  },
+  {
+    "wins": 49,
+    "losses": 14,
+    "full_name": "Golden State Warriors",
+    "id": 16
+  },
+  {
+    "wins": 34,
+    "losses": 28,
+    "full_name": "Los Angeles Clippers",
+    "id": 17
+  },
+  {
+    "wins": 28,
+    "losses": 35,
+    "full_name": "Los Angeles Lakers",
+    "id": 18
+  },
+  {
+    "wins": 19,
+    "losses": 47,
+    "full_name": "Phoenix Suns",
+    "id": 19
+  },
+  {
+    "wins": 20,
+    "losses": 44,
+    "full_name": "Sacramento Kings",
+    "id": 20
+  },
+  {
+    "wins": 19,
+    "losses": 45,
+    "full_name": "Dallas Mavericks",
+    "id": 21
+  },
+  {
+    "wins": 49,
+    "losses": 13,
+    "full_name": "Houston Rockets",
+    "id": 22
+  },
+  {
+    "wins": 18,
+    "losses": 45,
+    "full_name": "Memphis Grizzlies",
+    "id": 23
+  },
+  {
+    "wins": 36,
+    "losses": 26,
+    "full_name": "New Orleans Pelicans",
+    "id": 24
+  },
+  {
+    "wins": 37,
+    "losses": 27,
+    "full_name": "San Antonio Spurs",
+    "id": 25
+  },
+  {
+    "wins": 35,
+    "losses": 28,
+    "full_name": "Denver Nuggets",
+    "id": 26
+  },
+  {
+    "wins": 38,
+    "losses": 28,
+    "full_name": "Minnesota Timberwolves",
+    "id": 27
+  },
+  {
+    "wins": 37,
+    "losses": 28,
+    "full_name": "Oklahoma City Thunder",
+    "id": 28
+  },
+  {
+    "wins": 38,
+    "losses": 26,
+    "full_name": "Portland Trail Blazers",
+    "id": 29
+  },
+  {
+    "wins": 34,
+    "losses": 30,
+    "full_name": "Utah Jazz",
+    "id": 30
+  }
+]
