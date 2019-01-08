@@ -7,14 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.liyawei.nbateamviewer.R
-import com.liyawei.nbateamviewer.model.Team
-import com.liyawei.nbateamviewer.network.NetworkClient
 import com.liyawei.nbateamviewer.viewmodel.TeamViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,14 +25,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribeUi(viewModel: TeamViewModel) {
-        viewModel.getTeams().observe(this, Observer<List<Team>> { teams ->
+        viewModel.getTeams().observe(this, Observer { teams ->
             // update UI
             teams?.let {
                 (teams_list.adapter as TeamAdapter).setTeamList(it)
             }
         })
 
-        viewModel.isLoading.observe(this, Observer { value ->
+        viewModel.getIsLoading().observe(this, Observer { value ->
             value?.let { show ->
                 loading_spinner.visibility = if (show) View.VISIBLE else View.GONE
             }

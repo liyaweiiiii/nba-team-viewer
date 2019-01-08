@@ -9,8 +9,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class TeamViewModel : ViewModel() {
+class TeamViewModel : ViewModel(), CoroutineScope {
 
     /**
      * This is the job for all coroutines started by this ViewModel.
@@ -19,13 +20,8 @@ class TeamViewModel : ViewModel() {
      */
     private val viewModelJob = Job()
 
-    /**
-     * This is the main scope for all coroutines launched by MainViewModel.
-     *
-     * Since we pass viewModelJob, you can cancel all coroutines launched by uiScope by calling
-     * viewModelJob.cancel()
-     */
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + viewModelJob
 
     /**
      * Cancel all coroutines when the ViewModel is cleared
@@ -45,30 +41,37 @@ class TeamViewModel : ViewModel() {
         return teams
     }
 
-    private val _isLoading = MutableLiveData<Boolean>()
+    private lateinit var isLoading: MutableLiveData<Boolean>
 
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+    fun getIsLoading(): LiveData<Boolean> {
+        if (!::isLoading.isInitialized) {
+            isLoading = MutableLiveData()
+        }
+        return isLoading
+    }
 
-    private val showError = MutableLiveData<Boolean>()
+    private lateinit var showError: MutableLiveData<Boolean>
 
     fun shouldShowError(): LiveData<Boolean> {
+        if (!::showError.isInitialized) {
+            showError = MutableLiveData()
+        }
         return showError
     }
 
     private fun loadTeams() {
-        uiScope.launch {
+        launch {
             try {
-                _isLoading.value = true
-                val userCall = NetworkClient.getTeams(Dispatchers.IO)
-                userCall.await()?.let {
-                    showError.postValue(false)
-                    teams.postValue(it)
+                isLoading.value = true
+                val result = NetworkClient.getTeams(Dispatchers.IO)
+                result.await()?.let {
+                    showError.value = false
+                    teams.value = it
                 }
             } catch (e: Exception) {
-                showError.postValue(true)
+                showError.value = true
             } finally {
-                _isLoading.value = false
+                isLoading.value = false
             }
         }
 
