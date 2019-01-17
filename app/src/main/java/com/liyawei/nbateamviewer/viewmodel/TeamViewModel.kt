@@ -3,15 +3,14 @@ package com.liyawei.nbateamviewer.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.liyawei.nbateamviewer.model.Team
-import com.liyawei.nbateamviewer.network.NetworkClient
+import com.liyawei.nbateamviewer.data.DataRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class TeamViewModel : ViewModel(), CoroutineScope {
+class TeamViewModel(private val repository: DataRepository) : ViewModel(), CoroutineScope {
 
     /**
      * This is the job for all coroutines started by this ViewModel.
@@ -31,15 +30,7 @@ class TeamViewModel : ViewModel(), CoroutineScope {
         viewModelJob.cancel()
     }
 
-    private lateinit var teams: MutableLiveData<List<Team>>
-
-    fun getTeams(): LiveData<List<Team>> {
-        if (!::teams.isInitialized) {
-            teams = MutableLiveData()
-            loadTeams()
-        }
-        return teams
-    }
+    val teams = repository.teams
 
     private lateinit var isLoading: MutableLiveData<Boolean>
 
@@ -59,17 +50,14 @@ class TeamViewModel : ViewModel(), CoroutineScope {
         return showError
     }
 
-    private fun loadTeams() {
+    fun loadTeams() {
         launch {
             try {
                 isLoading.value = true
-                val result = NetworkClient.getTeams(Dispatchers.IO)
-                result.await()?.let {
-                    showError.value = false
-                    teams.value = it
-                }
+                repository.refreshTeams()
             } catch (e: Exception) {
                 showError.value = true
+                e.printStackTrace()
             } finally {
                 isLoading.value = false
             }

@@ -7,7 +7,11 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.liyawei.nbateamviewer.R
+import com.liyawei.nbateamviewer.data.DataRepository
+import com.liyawei.nbateamviewer.data.getDatabase
+import com.liyawei.nbateamviewer.network.NetworkClient
 import com.liyawei.nbateamviewer.viewmodel.TeamViewModel
+import com.liyawei.nbateamviewer.viewmodel.TeamViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,13 +23,18 @@ class MainActivity : AppCompatActivity() {
         teams_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         teams_list.adapter = TeamAdapter()
 
-        val model = ViewModelProviders.of(this).get(TeamViewModel::class.java)
+        val repository = DataRepository(NetworkClient, getDatabase(this).teamDao)
+        val model = ViewModelProviders.of(this, TeamViewModelFactory(repository)).get(TeamViewModel::class.java)
 
         subscribeUi(model)
+
+        if (savedInstanceState == null) {
+            model.loadTeams()
+        }
     }
 
     private fun subscribeUi(viewModel: TeamViewModel) {
-        viewModel.getTeams().observe(this, Observer { teams ->
+        viewModel.teams.observe(this, Observer { teams ->
             // update UI
             teams?.let {
                 (teams_list.adapter as TeamAdapter).setTeamList(it)
