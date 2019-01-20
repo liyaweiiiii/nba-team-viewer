@@ -37,6 +37,7 @@ class TeamViewModel(private val repository: DataRepository) : ViewModel(), Corou
     fun getIsLoading(): LiveData<Boolean> {
         if (!::isLoading.isInitialized) {
             isLoading = MutableLiveData()
+            isLoading.value = true
         }
         return isLoading
     }
@@ -46,6 +47,7 @@ class TeamViewModel(private val repository: DataRepository) : ViewModel(), Corou
     fun shouldShowError(): LiveData<Boolean> {
         if (!::showError.isInitialized) {
             showError = MutableLiveData()
+            showError.value = false
         }
         return showError
     }

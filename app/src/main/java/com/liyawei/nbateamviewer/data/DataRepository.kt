@@ -6,13 +6,13 @@ import com.liyawei.nbateamviewer.network.INetworkClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DataRepository(private val network: INetworkClient, private val teamDao: TeamDao) {
+open class DataRepository(private val network: INetworkClient, private val teamDao: TeamDao) {
 
-    val teams: LiveData<List<Team>> by lazy {
+    open val teams: LiveData<List<Team>> by lazy {
         teamDao.loadTeams()
     }
 
-    suspend fun refreshTeams() {
+     open suspend fun refreshTeams() {
         val result = network.getTeams(Dispatchers.IO).await()
         withContext(Dispatchers.IO) {
             try {
