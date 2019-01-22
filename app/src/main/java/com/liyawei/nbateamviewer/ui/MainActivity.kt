@@ -13,8 +13,10 @@ import com.liyawei.nbateamviewer.network.NetworkClient
 import com.liyawei.nbateamviewer.viewmodel.TeamViewModel
 import com.liyawei.nbateamviewer.viewmodel.TeamViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.annotations.TestOnly
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var viewModel: TeamViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +26,19 @@ class MainActivity : AppCompatActivity() {
         teams_list.adapter = TeamAdapter()
 
         val repository = DataRepository(NetworkClient, getDatabase(this).teamDao)
-        val model = ViewModelProviders.of(this, TeamViewModelFactory(repository)).get(TeamViewModel::class.java)
-
-        subscribeUi(model)
+        viewModel = ViewModelProviders.of(this, TeamViewModelFactory(repository)).get(TeamViewModel::class.java)
 
         if (savedInstanceState == null) {
-            model.loadTeams()
+            viewModel.loadTeams()
         }
     }
 
-    private fun subscribeUi(viewModel: TeamViewModel) {
+    override fun onStart() {
+        super.onStart()
+        subscribeUi()
+    }
+
+    private fun subscribeUi() {
         viewModel.teams.observe(this, Observer { teams ->
             // update UI
             teams?.let {
@@ -52,5 +57,10 @@ class MainActivity : AppCompatActivity() {
                 tv_error.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
+    }
+
+    @TestOnly
+    fun setTestViewModel(testViewModel: TeamViewModel){
+        viewModel = testViewModel
     }
 }

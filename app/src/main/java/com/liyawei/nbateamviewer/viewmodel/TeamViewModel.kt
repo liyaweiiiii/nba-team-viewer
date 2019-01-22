@@ -10,7 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class TeamViewModel(private val repository: DataRepository) : ViewModel(), CoroutineScope {
+open class TeamViewModel(private val repository: DataRepository) : ViewModel(), CoroutineScope {
 
     /**
      * This is the job for all coroutines started by this ViewModel.
@@ -30,11 +30,11 @@ class TeamViewModel(private val repository: DataRepository) : ViewModel(), Corou
         viewModelJob.cancel()
     }
 
-    val teams = repository.teams
+    open val teams = repository.teams
 
     private lateinit var isLoading: MutableLiveData<Boolean>
 
-    fun getIsLoading(): LiveData<Boolean> {
+    open fun getIsLoading(): LiveData<Boolean> {
         if (!::isLoading.isInitialized) {
             isLoading = MutableLiveData()
             isLoading.value = true
@@ -44,7 +44,7 @@ class TeamViewModel(private val repository: DataRepository) : ViewModel(), Corou
 
     private lateinit var showError: MutableLiveData<Boolean>
 
-    fun shouldShowError(): LiveData<Boolean> {
+    open fun shouldShowError(): LiveData<Boolean> {
         if (!::showError.isInitialized) {
             showError = MutableLiveData()
             showError.value = false
@@ -52,7 +52,7 @@ class TeamViewModel(private val repository: DataRepository) : ViewModel(), Corou
         return showError
     }
 
-    fun loadTeams() {
+    open fun loadTeams() {
         launch {
             try {
                 isLoading.value = true
