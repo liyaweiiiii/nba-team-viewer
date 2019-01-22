@@ -2,8 +2,10 @@ package com.liyawei.nbateamviewer.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import com.liyawei.nbateamviewer.data.DataRepository
+import com.liyawei.nbateamviewer.model.Team
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,7 +32,14 @@ open class TeamViewModel(private val repository: DataRepository) : ViewModel(), 
         viewModelJob.cancel()
     }
 
-    open val teams = repository.teams
+    open val teams: LiveData<List<Team>> = Transformations.map(repository.teams) { teams ->
+        if (teams.isNullOrEmpty()) {
+            loadTeams()
+        } else {
+            isLoading.value = false
+        }
+        return@map teams
+    }
 
     private lateinit var isLoading: MutableLiveData<Boolean>
 
@@ -64,6 +73,5 @@ open class TeamViewModel(private val repository: DataRepository) : ViewModel(), 
                 isLoading.value = false
             }
         }
-
     }
 }

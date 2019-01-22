@@ -27,10 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         val repository = DataRepository(NetworkClient, getDatabase(this).teamDao)
         viewModel = ViewModelProviders.of(this, TeamViewModelFactory(repository)).get(TeamViewModel::class.java)
-
-        if (savedInstanceState == null) {
-            viewModel.loadTeams()
-        }
     }
 
     override fun onStart() {
@@ -60,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @TestOnly
-    fun setTestViewModel(testViewModel: TeamViewModel){
+    fun setTestViewModel(testViewModel: TeamViewModel) {
         viewModel = testViewModel
     }
 }
