@@ -1,6 +1,7 @@
 package com.liyawei.nbateamviewer.viewmodel
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import com.liyawei.nbateamviewer.data.DataRepository
 import com.liyawei.nbateamviewer.model.Team
 import kotlinx.coroutines.runBlocking
@@ -10,8 +11,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.robolectric.RobolectricTestRunner
@@ -31,8 +32,8 @@ class TeamViewModelTest {
         Team(1, "Celtics", 0, 82)
     )
 
-    @Mock
-    private lateinit var teamListLiveData: LiveData<List<Team>>
+    @Spy
+    private val teamListLiveData: MutableLiveData<List<Team>> = MutableLiveData()
 
     @Mock
     private lateinit var repo: DataRepository
@@ -88,12 +89,38 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `teams is set when repo returns teams normally`() = runBlocking {
+    fun `call refreshTeams to get teams if not locally present`() = runBlocking {
+        teamListLiveData.value = listOf()
 
-        `when`(teamListLiveData.value).thenReturn(teams)
-        assertEquals(teams, viewModel.teams.value)
+        viewModel.teams.observeForever { }
 
+        verify(repo).refreshTeams()
+
+        val isLoading = isLoadingLiveData.value
+        assertNotNull(isLoading)
+        isLoading?.let { assertFalse(it) }
+
+        val isError = isErrorLiveData.value
+        assertNotNull(isError)
+        isError?.let { assertFalse(it) }
         return@runBlocking
     }
 
+    @Test
+    fun `retrieves local teams without calling refreshTeams`() = runBlocking {
+        teamListLiveData.value = teams
+
+        viewModel.teams.observeForever { }
+
+        verify(repo, never()).refreshTeams()
+
+        val isLoading = isLoadingLiveData.value
+        assertNotNull(isLoading)
+        isLoading?.let { assertFalse(it) }
+
+        val isError = isErrorLiveData.value
+        assertNotNull(isError)
+        isError?.let { assertFalse(it) }
+        return@runBlocking
+    }
 }
