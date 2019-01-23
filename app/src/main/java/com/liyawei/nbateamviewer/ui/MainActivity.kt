@@ -39,12 +39,19 @@ class MainActivity : AppCompatActivity() {
             // update UI
             teams?.let {
                 (teams_list.adapter as TeamAdapter).setTeamList(it)
+                teams_list.visibility = View.VISIBLE
             }
         })
 
         viewModel.getIsLoading().observe(this, Observer { value ->
             value?.let { show ->
-                loading_spinner.visibility = if (show) View.VISIBLE else View.GONE
+                if (show) {
+                    loading_spinner.visibility = View.VISIBLE
+                    teams_list.visibility = View.GONE
+                    tv_error.visibility = View.GONE
+                } else {
+                    loading_spinner.visibility = View.GONE
+                }
             }
         })
 

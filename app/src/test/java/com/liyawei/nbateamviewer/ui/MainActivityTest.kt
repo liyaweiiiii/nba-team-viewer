@@ -77,7 +77,37 @@ class MainActivityTest {
     }
 
     @Test
-    fun hasVisibleLoadingViewOnCreate() {
+    fun `has visible loading view on create`() {
         assertEquals(View.VISIBLE, activity.loading_spinner.visibility)
+    }
+
+    @Test
+    fun `has hidden recycler view and error view on create`() {
+        assertEquals(View.GONE, activity.teams_list.visibility)
+        assertEquals(View.GONE, activity.tv_error.visibility)
+    }
+
+    @Test
+    fun `displays teams list when available`() {
+        val teamsList = listOf(Team(1, "Team1", 4, 2), Team(2, "Team2", 3, 5))
+        teamsObserverCaptor.value.onChanged(teamsList)
+        isLoadingObserverCaptor.value.onChanged(false)
+        isErrorObserverCaptor.value.onChanged(false)
+
+        assertEquals(View.VISIBLE, activity.teams_list.visibility)
+        assertEquals(View.GONE, activity.loading_spinner.visibility)
+        assertEquals(View.GONE, activity.tv_error.visibility)
+
+        assertEquals(teamsList, (activity.teams_list.adapter as? TeamAdapter)?.getTeamList())
+    }
+
+    @Test
+    fun `displays error view when error obtaining teams`() {
+        isLoadingObserverCaptor.value.onChanged(false)
+        isErrorObserverCaptor.value.onChanged(true)
+
+        assertEquals(View.GONE, activity.teams_list.visibility)
+        assertEquals(View.GONE, activity.loading_spinner.visibility)
+        assertEquals(View.VISIBLE, activity.tv_error.visibility)
     }
 }

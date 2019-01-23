@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import com.liyawei.nbateamviewer.R
 import com.liyawei.nbateamviewer.model.Team
 import kotlinx.android.synthetic.main.viewholder_team_item.view.*
+import org.jetbrains.annotations.TestOnly
 
 class TeamAdapter : RecyclerView.Adapter<TeamViewHolder>() {
 
-    private var mTeamList = listOf<Team>()
+    private val mTeamList = mutableListOf<Team>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamViewHolder {
         return TeamViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.viewholder_team_item, parent, false))
@@ -23,10 +24,13 @@ class TeamAdapter : RecyclerView.Adapter<TeamViewHolder>() {
     }
 
     fun setTeamList(teamList: List<Team>) {
-        mTeamList = teamList
+        mTeamList.clear()
+        mTeamList.addAll(teamList)
         notifyDataSetChanged()
     }
 
+    @TestOnly
+    fun getTeamList(): List<Team> = mTeamList
 }
 
 class TeamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
