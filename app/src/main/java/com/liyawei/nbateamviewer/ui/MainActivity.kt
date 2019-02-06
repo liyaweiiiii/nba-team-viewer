@@ -6,7 +6,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import com.liyawei.nbateamviewer.R
 import com.liyawei.nbateamviewer.data.DataRepository
 import com.liyawei.nbateamviewer.data.getDatabase
@@ -23,12 +22,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var teamsObserver: Observer<List<Team>>
-    private lateinit var isLoadingObserver: Observer<Boolean>
-    private lateinit var isErrorObserver: Observer<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.setLifecycleOwner(this)
 
         teams_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         teams_list.adapter = TeamAdapter()
@@ -48,25 +46,6 @@ class MainActivity : AppCompatActivity() {
         teamsObserver = Observer { teams ->
             teams?.let {
                 (teams_list.adapter as TeamAdapter).setTeamList(it)
-                teams_list.visibility = View.VISIBLE
-            }
-        }
-
-        isLoadingObserver = Observer { value ->
-            value?.let { show ->
-                if (show) {
-                    loading_spinner.visibility = View.VISIBLE
-                    teams_list.visibility = View.GONE
-                    tv_error.visibility = View.GONE
-                } else {
-                    loading_spinner.visibility = View.GONE
-                }
-            }
-        }
-
-        isErrorObserver = Observer { value ->
-            value?.let { show ->
-                tv_error.visibility = if (show) View.VISIBLE else View.GONE
             }
         }
     }
@@ -74,8 +53,6 @@ class MainActivity : AppCompatActivity() {
     private fun registerObservers() {
         viewModel.apply {
             teams.observe(this@MainActivity, teamsObserver)
-            getIsLoading().observe(this@MainActivity, isLoadingObserver)
-            shouldShowError().observe(this@MainActivity, isErrorObserver)
         }
     }
 
