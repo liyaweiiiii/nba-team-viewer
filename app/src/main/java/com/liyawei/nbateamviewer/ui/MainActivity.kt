@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.liyawei.nbateamviewer.R
+import com.liyawei.nbateamviewer.adapters.TeamAdapter
 import com.liyawei.nbateamviewer.data.DataRepository
 import com.liyawei.nbateamviewer.data.getDatabase
 import com.liyawei.nbateamviewer.databinding.ActivityMainBinding
