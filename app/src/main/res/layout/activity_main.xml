@@ -20,29 +20,29 @@
             android:id="@+id/teams_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{viewModel.getIsLoading() || viewModel.shouldShowError()? View.GONE: View.VISIBLE}"
-            app:teamList="@{viewModel.teams}"/>
+            app:setVisibleOrGone="@{!(viewModel.getIsLoading() || viewModel.shouldShowError())}"
+            app:teamList="@{viewModel.teams}" />
 
         <ProgressBar
             android:id="@+id/loading_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.getIsLoading() ? View.VISIBLE: View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:setVisibleOrGone="@{viewModel.getIsLoading()}" />
 
         <TextView
             android:id="@+id/tv_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Error"
-            android:visibility="@{viewModel.shouldShowError() ? View.VISIBLE: View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:setVisibleOrGone="@{viewModel.shouldShowError()}" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

@@ -6,8 +6,8 @@ import com.liyawei.nbateamviewer.adapters.TeamAdapter
 import com.liyawei.nbateamviewer.model.Team
 
 @BindingAdapter("teamList")
-fun setTeamList(view: RecyclerView, teamList: List<Team>?) {
+fun RecyclerView.setTeamList(teamList: List<Team>?) {
     teamList?.let {
-        (view.adapter as? TeamAdapter)?.setTeamList(it)
+        (adapter as? TeamAdapter)?.setTeamList(it)
     }
 }
