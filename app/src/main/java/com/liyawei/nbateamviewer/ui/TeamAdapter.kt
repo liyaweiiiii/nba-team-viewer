@@ -1,5 +1,6 @@
 package com.liyawei.nbateamviewer.ui
 
+import android.databinding.BindingAdapter
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -40,4 +41,11 @@ class TeamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.loses.text = team.losses.toString()
     }
 
+}
+
+@BindingAdapter("teamList")
+fun setTeamList(view: RecyclerView, teamList: List<Team>?) {
+    teamList?.let {
+        (view.adapter as? TeamAdapter)?.setTeamList(it)
+    }
 }

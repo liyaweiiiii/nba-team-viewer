@@ -20,7 +20,8 @@
             android:id="@+id/teams_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{viewModel.getIsLoading() || viewModel.shouldShowError()? View.GONE: View.VISIBLE}" />
+            android:visibility="@{viewModel.getIsLoading() || viewModel.shouldShowError()? View.GONE: View.VISIBLE}"
+            app:teamList="@{viewModel.teams}"/>
 
         <ProgressBar
             android:id="@+id/loading_spinner"
