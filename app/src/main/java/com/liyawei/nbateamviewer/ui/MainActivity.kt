@@ -18,7 +18,7 @@ import org.jetbrains.annotations.TestOnly
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: TeamViewModel
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

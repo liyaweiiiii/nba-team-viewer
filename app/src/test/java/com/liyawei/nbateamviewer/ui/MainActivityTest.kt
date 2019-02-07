@@ -1,25 +1,18 @@
 package com.liyawei.nbateamviewer.ui
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import android.arch.lifecycle.MutableLiveData
 import android.view.View
 import com.liyawei.nbateamviewer.adapters.TeamAdapter
 import com.liyawei.nbateamviewer.model.Team
 import com.liyawei.nbateamviewer.viewmodel.TeamViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
-
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers
-import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.robolectric.Robolectric
@@ -36,23 +29,11 @@ class MainActivityTest {
     @Mock
     private lateinit var viewModel: TeamViewModel
 
-    @Mock
-    private lateinit var teamsLiveData: LiveData<List<Team>>
+    private lateinit var teamsLiveData: MutableLiveData<List<Team>>
 
-    @Mock
-    private lateinit var isLoadingLiveData: LiveData<Boolean>
+    private lateinit var isLoadingLiveData: MutableLiveData<Boolean>
 
-    @Mock
-    private lateinit var isErrorLiveData: LiveData<Boolean>
-
-    @Captor
-    private lateinit var teamsObserverCaptor: ArgumentCaptor<Observer<List<Team>>>
-
-    @Captor
-    private lateinit var isLoadingObserverCaptor: ArgumentCaptor<Observer<Boolean>>
-
-    @Captor
-    private lateinit var isErrorObserverCaptor: ArgumentCaptor<Observer<Boolean>>
+    private lateinit var isErrorLiveData: MutableLiveData<Boolean>
 
     @Rule
     @JvmField
@@ -60,6 +41,12 @@ class MainActivityTest {
 
     @Before
     fun setUp() {
+        teamsLiveData = MutableLiveData()
+        isLoadingLiveData = MutableLiveData()
+        isLoadingLiveData.value = true
+        isErrorLiveData = MutableLiveData()
+        isErrorLiveData.value = false
+
         `when`(viewModel.teams).thenReturn(teamsLiveData)
         `when`(viewModel.getIsLoading()).thenReturn(isLoadingLiveData)
         `when`(viewModel.shouldShowError()).thenReturn(isErrorLiveData)
@@ -71,9 +58,6 @@ class MainActivityTest {
         activity.setTestViewModel(viewModel)
 
         activityController.start()
-        verify(teamsLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), teamsObserverCaptor.capture())
-        verify(isLoadingLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), isLoadingObserverCaptor.capture())
-        verify(isErrorLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), isErrorObserverCaptor.capture())
     }
 
     @Test
@@ -90,9 +74,11 @@ class MainActivityTest {
     @Test
     fun `displays teams list when available`() {
         val teamsList = listOf(Team(1, "Team1", 4, 2), Team(2, "Team2", 3, 5))
-        teamsObserverCaptor.value.onChanged(teamsList)
-        isLoadingObserverCaptor.value.onChanged(false)
-        isErrorObserverCaptor.value.onChanged(false)
+        teamsLiveData.value = teamsList
+        isLoadingLiveData.value = false
+        isErrorLiveData.value = false
+
+        activity.binding.executePendingBindings()
 
         assertEquals(View.VISIBLE, activity.teams_list.visibility)
         assertEquals(View.GONE, activity.loading_spinner.visibility)
@@ -103,8 +89,10 @@ class MainActivityTest {
 
     @Test
     fun `displays error view when error obtaining teams`() {
-        isLoadingObserverCaptor.value.onChanged(false)
-        isErrorObserverCaptor.value.onChanged(true)
+        isLoadingLiveData.value = false
+        isErrorLiveData.value = true
+
+        activity.binding.executePendingBindings()
 
         assertEquals(View.GONE, activity.teams_list.visibility)
         assertEquals(View.GONE, activity.loading_spinner.visibility)
