@@ -1,5 +1,6 @@
 package com.liyawei.nbateamviewer.adapters
 
+import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,15 +13,14 @@ class TeamAdapter : RecyclerView.Adapter<TeamViewHolder>() {
 
     private val mTeamList = mutableListOf<Team>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamViewHolder {
-        return TeamViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.viewholder_team_item,
-                parent,
-                false
-            )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TeamViewHolder(
+        DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.viewholder_team_item,
+            parent,
+            false
         )
-    }
+    )
 
     override fun getItemCount() = mTeamList.size
 
