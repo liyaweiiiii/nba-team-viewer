@@ -1,7 +1,6 @@
 package com.liyawei.nbateamviewer.adapters
 
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import android.support.v7.recyclerview.extensions.ListAdapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.liyawei.nbateamviewer.R
@@ -9,7 +8,7 @@ import com.liyawei.nbateamviewer.model.Team
 import com.liyawei.nbateamviewer.viewholders.TeamViewHolder
 import org.jetbrains.annotations.TestOnly
 
-class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<TeamViewHolder>(),
+class TeamAdapter(private val delegate: ClickDelegate) : ListAdapter<Team, TeamViewHolder>(TeamDiffCallback()),
     TeamViewHolder.ClickDelegate {
     private val mTeamList = mutableListOf<Team>()
 
@@ -19,8 +18,6 @@ class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<Te
             this
         )
     }
-
-    override fun getItemCount() = mTeamList.size
 
     override fun onBindViewHolder(holder: TeamViewHolder, position: Int) {
         holder.onBind(mTeamList[position])
@@ -43,8 +40,7 @@ class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<Te
     }
 
     fun setTeamList(teamList: List<Team>) {
-        val diff = DiffUtil.calculateDiff(TeamDiffCallback(mTeamList, teamList))
-        diff.dispatchUpdatesTo(this)
+        submitList(teamList)
         mTeamList.clear()
         mTeamList.addAll(teamList)
     }
