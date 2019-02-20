@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NBA Team Viewer</string>
+    <string name="delete">Delete</string>
 </resources>

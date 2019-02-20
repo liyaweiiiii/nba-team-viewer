@@ -12,7 +12,7 @@ open class DataRepository(private val network: INetworkClient, private val teamD
         teamDao.loadTeams()
     }
 
-     open suspend fun refreshTeams() {
+    open suspend fun refreshTeams() {
         val result = network.getTeams(Dispatchers.IO).await()
         withContext(Dispatchers.IO) {
             try {
@@ -23,6 +23,12 @@ open class DataRepository(private val network: INetworkClient, private val teamD
                 throw e
             }
 
+        }
+    }
+
+    suspend fun deleteTeams(teams: Set<Team>) {
+        withContext(Dispatchers.IO) {
+            teamDao.deleteTeams(teams)
         }
     }
 }

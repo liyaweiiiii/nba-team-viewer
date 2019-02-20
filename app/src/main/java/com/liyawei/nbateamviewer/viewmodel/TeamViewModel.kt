@@ -24,6 +24,8 @@ open class TeamViewModel(private val repository: DataRepository) : ViewModel(), 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + viewModelJob
 
+    private val selectedTeams = mutableSetOf<Team>()
+
     /**
      * Cancel all coroutines when the ViewModel is cleared
      */
@@ -61,6 +63,16 @@ open class TeamViewModel(private val repository: DataRepository) : ViewModel(), 
         return showError
     }
 
+    private lateinit var showDeleteButton: MutableLiveData<Boolean>
+
+    open fun shouldShowDeleteButton(): LiveData<Boolean> {
+        if (!::showDeleteButton.isInitialized) {
+            showDeleteButton = MutableLiveData()
+            showDeleteButton.value = false
+        }
+        return showDeleteButton
+    }
+
     open fun loadTeams() {
         launch {
             try {
@@ -72,6 +84,28 @@ open class TeamViewModel(private val repository: DataRepository) : ViewModel(), 
             } finally {
                 isLoading.value = false
             }
+        }
+    }
+
+    fun onTeamLongPress(team: Team) {
+        if (!selectedTeams.remove(team)) {
+            selectedTeams.add(team)
+        }
+
+        updateDeleteButtonState()
+    }
+
+    private fun updateDeleteButtonState() {
+        if (showDeleteButton.value != selectedTeams.isNotEmpty()) {
+            showDeleteButton.value = selectedTeams.isNotEmpty()
+        }
+    }
+
+    fun onDeleteClicked() {
+        launch {
+            repository.deleteTeams(selectedTeams)
+            selectedTeams.clear()
+            updateDeleteButtonState()
         }
     }
 }

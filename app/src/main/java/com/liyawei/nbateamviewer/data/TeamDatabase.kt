@@ -15,6 +15,9 @@ interface TeamDao {
 
     @Query("select * from Team")
     fun loadTeams(): LiveData<List<Team>>
+
+    @Delete
+    fun deleteTeams(teams: Set<Team>)
 }
 
 @Database(entities = [Team::class], version = 1, exportSchema = false)

@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import com.liyawei.nbateamviewer.R
 import com.liyawei.nbateamviewer.data.DataRepository
@@ -16,19 +18,20 @@ import com.liyawei.nbateamviewer.viewmodel.TeamViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.annotations.TestOnly
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TeamAdapter.ClickDelegate {
     private lateinit var viewModel: TeamViewModel
 
     private lateinit var teamsObserver: Observer<List<Team>>
     private lateinit var isLoadingObserver: Observer<Boolean>
     private lateinit var isErrorObserver: Observer<Boolean>
+    private lateinit var shouldShowDeleteObserver: Observer<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         teams_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        teams_list.adapter = TeamAdapter()
+        teams_list.adapter = TeamAdapter(this)
 
         val repository = DataRepository(NetworkClient, getDatabase(this).teamDao)
         viewModel = ViewModelProviders.of(this, TeamViewModelFactory(repository)).get(TeamViewModel::class.java)
@@ -38,6 +41,32 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         registerObservers()
+    }
+
+    override fun onTeamLongPress(team: Team) {
+        viewModel.onTeamLongPress(team)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.let {
+            menuInflater.inflate(R.menu.menu, it)
+            it.findItem(R.id.delete).isVisible = viewModel.shouldShowDeleteButton().value == true
+            return true
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        item?.let {
+            when(it.itemId) {
+                R.id.delete -> {
+                    viewModel.onDeleteClicked()
+                    return true
+                }
+                else -> {}
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initializeObservers() {
@@ -65,6 +94,10 @@ class MainActivity : AppCompatActivity() {
                 tv_error.visibility = if (show) View.VISIBLE else View.GONE
             }
         }
+
+        shouldShowDeleteObserver = Observer { value ->
+            value?.let { invalidateOptionsMenu() }
+        }
     }
 
     private fun registerObservers() {
@@ -72,6 +105,7 @@ class MainActivity : AppCompatActivity() {
             teams.observe(this@MainActivity, teamsObserver)
             getIsLoading().observe(this@MainActivity, isLoadingObserver)
             shouldShowError().observe(this@MainActivity, isErrorObserver)
+            shouldShowDeleteButton().observe(this@MainActivity, shouldShowDeleteObserver)
         }
     }
 
