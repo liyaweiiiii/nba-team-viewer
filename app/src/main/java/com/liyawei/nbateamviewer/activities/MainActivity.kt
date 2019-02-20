@@ -1,4 +1,4 @@
-package com.liyawei.nbateamviewer.ui
+package com.liyawei.nbateamviewer.activities
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.liyawei.nbateamviewer.R
+import com.liyawei.nbateamviewer.adapters.TeamAdapter
 import com.liyawei.nbateamviewer.data.DataRepository
 import com.liyawei.nbateamviewer.data.getDatabase
 import com.liyawei.nbateamviewer.model.Team
