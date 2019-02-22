@@ -1,5 +1,6 @@
 package com.liyawei.nbateamviewer.adapters
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -32,9 +33,10 @@ class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<Te
     }
 
     fun setTeamList(teamList: List<Team>) {
+        val diffResult = DiffUtil.calculateDiff(TeamDiffCallback(mTeamList, teamList))
+        diffResult.dispatchUpdatesTo(this)
         mTeamList.clear()
         mTeamList.addAll(teamList)
-        notifyDataSetChanged()
     }
 
     @TestOnly
