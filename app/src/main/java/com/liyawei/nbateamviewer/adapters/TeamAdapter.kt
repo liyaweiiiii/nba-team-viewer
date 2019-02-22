@@ -1,6 +1,6 @@
 package com.liyawei.nbateamviewer.adapters
 
-import android.support.v7.recyclerview.extensions.ListAdapter
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.liyawei.nbateamviewer.R
@@ -8,7 +8,7 @@ import com.liyawei.nbateamviewer.model.Team
 import com.liyawei.nbateamviewer.viewholders.TeamViewHolder
 import org.jetbrains.annotations.TestOnly
 
-class TeamAdapter(private val delegate: ClickDelegate) : ListAdapter<Team, TeamViewHolder>(TeamDiffCallback()),
+class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<TeamViewHolder>(),
     TeamViewHolder.ClickDelegate {
     private val mTeamList = mutableListOf<Team>()
 
@@ -19,18 +19,10 @@ class TeamAdapter(private val delegate: ClickDelegate) : ListAdapter<Team, TeamV
         )
     }
 
+    override fun getItemCount() = mTeamList.size
+
     override fun onBindViewHolder(holder: TeamViewHolder, position: Int) {
         holder.onBind(mTeamList[position])
-    }
-
-    override fun onBindViewHolder(holder: TeamViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) {
-            holder.onBind(mTeamList[position])
-        } else {
-            for (payload in payloads) {
-                holder.onBind(payload)
-            }
-        }
     }
 
     override fun onTeamLongPress(index: Int) {
@@ -40,9 +32,9 @@ class TeamAdapter(private val delegate: ClickDelegate) : ListAdapter<Team, TeamV
     }
 
     fun setTeamList(teamList: List<Team>) {
-        submitList(teamList)
         mTeamList.clear()
         mTeamList.addAll(teamList)
+        notifyDataSetChanged()
     }
 
     @TestOnly
