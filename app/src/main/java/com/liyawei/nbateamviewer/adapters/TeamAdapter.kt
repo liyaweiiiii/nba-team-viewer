@@ -26,6 +26,16 @@ class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<Te
         holder.onBind(mTeamList[position])
     }
 
+    override fun onBindViewHolder(holder: TeamViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            holder.onBind(mTeamList[position])
+        } else {
+            for (payload in payloads) {
+                holder.onBind(payload)
+            }
+        }
+    }
+
     override fun onTeamLongPress(index: Int) {
         mTeamList[index].selected = !mTeamList[index].selected
         notifyItemChanged(index)
@@ -34,9 +44,9 @@ class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<Te
 
     fun setTeamList(teamList: List<Team>) {
         val diffResult = DiffUtil.calculateDiff(TeamDiffCallback(mTeamList, teamList))
-        diffResult.dispatchUpdatesTo(this)
         mTeamList.clear()
         mTeamList.addAll(teamList)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     @TestOnly
