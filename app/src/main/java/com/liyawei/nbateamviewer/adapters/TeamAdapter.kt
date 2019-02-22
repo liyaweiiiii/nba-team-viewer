@@ -1,17 +1,14 @@
 package com.liyawei.nbateamviewer.adapters
 
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import android.support.v7.recyclerview.extensions.ListAdapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.liyawei.nbateamviewer.R
 import com.liyawei.nbateamviewer.model.Team
 import com.liyawei.nbateamviewer.viewholders.TeamViewHolder
-import org.jetbrains.annotations.TestOnly
 
-class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<TeamViewHolder>(),
+class TeamAdapter(private val delegate: ClickDelegate) : ListAdapter<Team, TeamViewHolder>(TeamDiffCallback()),
     TeamViewHolder.ClickDelegate {
-    private val mTeamList = mutableListOf<Team>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamViewHolder {
         return TeamViewHolder(
@@ -20,15 +17,13 @@ class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<Te
         )
     }
 
-    override fun getItemCount() = mTeamList.size
-
     override fun onBindViewHolder(holder: TeamViewHolder, position: Int) {
-        holder.onBind(mTeamList[position])
+        holder.onBind(getItem(position))
     }
 
     override fun onBindViewHolder(holder: TeamViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
-            holder.onBind(mTeamList[position])
+            holder.onBind(getItem(position))
         } else {
             for (payload in payloads) {
                 holder.onBind(payload)
@@ -37,20 +32,14 @@ class TeamAdapter(private val delegate: ClickDelegate) : RecyclerView.Adapter<Te
     }
 
     override fun onTeamLongPress(index: Int) {
-        mTeamList[index].selected = !mTeamList[index].selected
+        getItem(index).selected = !getItem(index).selected
         notifyItemChanged(index)
-        delegate.onTeamLongPress(mTeamList[index])
+        delegate.onTeamLongPress(getItem(index))
     }
 
     fun setTeamList(teamList: List<Team>) {
-        val diffResult = DiffUtil.calculateDiff(TeamDiffCallback(mTeamList, teamList))
-        mTeamList.clear()
-        mTeamList.addAll(teamList)
-        diffResult.dispatchUpdatesTo(this)
+        submitList(teamList)
     }
-
-    @TestOnly
-    fun getTeamList(): List<Team> = mTeamList
 
     interface ClickDelegate {
         fun onTeamLongPress(team: Team)
